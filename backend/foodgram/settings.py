@@ -9,7 +9,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-DEBUG = os.getenv("DEBUG", False) == "True"
+# DEBUG = os.getenv("DEBUG", False) == "True"
+DEBUG = True
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
@@ -125,12 +126,18 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_URL = "/backend_static/"
+# STATIC_URL = "/backend_static/"
+# STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# STATIC_ROOT = BASE_DIR / 'static'
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# MEDIA_URL = "/backend_media/"
+# MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+# MEDIA_ROOT = BASE_DIR / 'media'
 
-MEDIA_URL = "/backend_media/"
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "collected_static")
 
+MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
