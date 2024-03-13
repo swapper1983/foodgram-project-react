@@ -86,7 +86,7 @@ jobs:
       run: |
         cd frontend/
         npm cache clean --force
-        npm install
+        npm install --force
         # npm ci --force
 
     - name: Test frontend
