@@ -85,7 +85,9 @@ jobs:
     - name: Install dependencies
       run: |
         cd frontend/
-        npm ci --force
+        npm cache clean --force
+        npm install
+        # npm ci --force
 
     - name: Test frontend
       run: |
