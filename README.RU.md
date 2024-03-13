@@ -240,4 +240,4 @@ docker-compose down
 
 ### Контакты
 Если у вас есть вопросы или пожелания по проекту, вы можете написать мне:
-[GitHub](https://github.com/octrow)
+[GitHub](https://github.com/swapper1983)

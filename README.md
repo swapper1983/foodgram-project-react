@@ -241,4 +241,4 @@ docker-compose down
 
 ### Contacts
 If you have any questions or queries about the project, you can write to me:
-[GitHub](https://github.com/octrow)
+[GitHub](https://github.com/swapper1983)
