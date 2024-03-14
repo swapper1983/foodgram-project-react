@@ -29,17 +29,17 @@
 
 #### Структура репозитория
  * /frontend - файлы, необходимые для сборки фронтенда приложения.
- * /infra — заготовка инфраструктуры проекта: конфигурационный файл nginx и docker-compose.yml.
+ * /gateway - конфигурационные файлы nginx и Docker.
+ * /infra — заготовка инфраструктуры проекта.
  * /backend - бэкенд foodgram на Django.
  * /data - список ингредиентов с единицами измерения (json, cvs).
  * /docs - файлы спецификации API.
  * /postman-collection - тесты API
 
-### Сайт и документация API доступена по ссылкам:
+### Сайт доступен по ссылке:
 
 ```
-- http://foodgramdjango.ddns.net/
-- http://foodgramdjango.ddns.net/api/docs/
+- https:://mealgram.duckdns.org
 ```
 
 ### Foodgram - проект позволяет:
@@ -77,7 +77,7 @@
 ### Локальная установка
 1. Клонируйте репозиторий:
 ```
-git clone git@github.com:octrow/foodgram-project-react.git
+git clone git@github.com:swapper1983/foodgram-project-react.git
 cd foodgram-project-react
 ```
 
@@ -116,6 +116,7 @@ python manage.py migrate
 7. Соберите статику:
 ```
 python manage.py collectstatic --no-input
+cp -r //app/collected_static/. //backend_static/static/
 ```
 8. Создайте суперпользователя:
 ```
@@ -128,10 +129,6 @@ python manage.py load
 10. В папке с файлом manage.py выполните команду для запуска локально:
 ```
 python manage.py runserver
-```
-Локально документация доступна по адресу:
-```
-http://127.0.0.1:8000/api/docs/
 ```
 
 ### Запуск проекта в контейнерах:
@@ -150,16 +147,18 @@ sudo apt-get install docker-compose-plugin
 
 2. Cоздайте и заполните .env файл в корневом каталоге 
 ```
-SECRET_KEY=django-insecure-**************************************
-DEBUG=True
-ALLOWED_HOSTS=ip-адрес-сервера,127.0.0.1,localhost,адрес-сайте.ру
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_DB=postgres
-# Django
+POSTGRES_DB=foodgram
+POSTGRES_USER=foodgram_user
+POSTGRES_PASSWORD=foodgram_password
+DB_NAME=postgram
 DB_HOST=db
 DB_PORT=5432
-DB_NAME=postgram
+DEBUG=True
+SECRET_KEY=django-insecure-**************************************
+DOCKER_NICKNAME=nick
+DOCKER_USERNAME=username
+DOCKER_PASSWORD=password
+ALLOWED_HOSTS=127.0.0.1,localhost,foodgram,backend,domainname
 ```
 
 3. Из папки infra/ разверните контейнеры при помощи docker-compose:
@@ -177,7 +176,8 @@ docker-compose exec backend python manage.py createsuperuser
 ```
 6. Соберите статику:
 ```
-docker-compose exec backend python manage.py collectstatic --no-input
+docker compose -f docker-compose.yml exec backend python manage.py collectstatic --no-input
+docker compose -f docker-compose.yml exec backend cp -r //app/collected_static/. //backend_static/static/
 ```
 7. Наполните базу данных (ингредиентами). 
 ```
@@ -187,10 +187,6 @@ docker-compose exec backend python manage.py load
 
 ```
 http://localhost/
-```
-Документация доступна по адресу:
-```
-http://localhost/api/docs/
 ```
 8. Остановка проекта:
 ```

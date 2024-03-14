@@ -29,17 +29,17 @@ This is an online service and an API for it. On this service, users can publish 
 
 #### Repository structure
  * /frontend - files needed to build the frontend of the application.
- * /infra - infrastructure template of the project: nginx configuration file and docker-compose.yml.
+ * /gateway - nginx and Docker configuration files.
+ * /infra - infrastructure template of the project.
  * /backend - foodgram backend on Django.
  * /data - list of ingredients with units of measurement (json, cvs).
  * /docs - API specification files.
  * /postman-collection - API tests
 
-### Site and API documentation are available at the links:
+### Site is available at the link:
 
 ```
-- http://foodgramdjango.ddns.net/
-- http://foodgramdjango.ddns.net/api/docs/
+- https:://mealgram.duckdns.org
 ```
 
 ### Foodgram - project allows:
@@ -77,8 +77,8 @@ This is an online service and an API for it. On this service, users can publish 
 ### Local installation
 1. Clone the repository:
 ```
-git clone git@github.com:octrow/foodgram-project-react.git
-cd foodgram-project-react
+git clone git@github.com:swapper1983/foodgram-project-react.git
+cd foodgram
 ```
 
 2. In the root directory, create a .env file with environment variables.
@@ -114,9 +114,10 @@ DATABASES = {
 python manage.py makemigrations
 python manage.py migrate
 ```
-7. Collect static:
+7. Collect static (at /backend):
 ```
 python manage.py collectstatic --no-input
+cp -r //app/collected_static/. //backend_static/static/
 ```
 8. Create a superuser:
 ```
@@ -131,8 +132,6 @@ python manage.py load
 python manage.py runserver
 ```
 Locally, the documentation is available at:
-```
-http://127.0.0.1:8000/api/docs/
 ```
 
 ### Running the project in containers:
@@ -151,16 +150,18 @@ sudo apt-get install docker-compose-plugin
 
 2. Create and fill in the .env file in the root directory
 ```
-SECRET_KEY=django-insecure-**************************************
-DEBUG=True
-ALLOWED_HOSTS=ip-адрес-сервера,127.0.0.1,localhost,адрес-сайте.ру
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_DB=postgres
-# Django
+POSTGRES_DB=foodgram
+POSTGRES_USER=foodgram_user
+POSTGRES_PASSWORD=foodgram_password
+DB_NAME=postgram
 DB_HOST=db
 DB_PORT=5432
-DB_NAME=postgram
+DEBUG=True
+SECRET_KEY=django-insecure-**************************************
+DOCKER_NICKNAME=nick
+DOCKER_USERNAME=username
+DOCKER_PASSWORD=password
+ALLOWED_HOSTS=127.0.0.1,localhost,foodgram,backend,domainname
 ```
 
 3. From the infra/ folder, deploy the containers using docker-compose:
@@ -178,7 +179,8 @@ docker-compose exec backend python manage.py createsuperuser
 ```
 6. Collect static:
 ```
-docker-compose exec backend python manage.py collectstatic --no-input
+docker compose -f docker-compose.yml exec backend python manage.py collectstatic --no-input
+docker compose -f docker-compose.yml exec backend cp -r //app/collected_static/. //backend_static/static/
 ```
 7. Populate the database (with ingredients).
 ```
@@ -190,8 +192,6 @@ The project is available at:
 http://localhost/
 ```
 The documentation is available at:
-```
-http://localhost/api/docs/
 ```
 8. Stop the project:
 ```
