@@ -7,14 +7,13 @@
     <img src="https://img.shields.io/badge/nginx-1.19.3-blue.svg?style=for-the-badge&logo=nginx&logoColor=11FF44" />
     <img src="https://img.shields.io/badge/gunicorn-21.2.0-blue.svg?style=for-the-badge&logo=gunicorn&logoColor=11FF44" />
     <img src="https://img.shields.io/badge/docker-24.0.5-blue.svg?style=for-the-badge&logo=docker&logoColor=33AAFF" />
-    <img src="https://img.shields.io/badge/postgreSQL-13.0-blue.svg?style=for-the-badge&logo=postgresql&logoColor=66EEFF" />
+    <img src="https://img.shields.io/badge/postgreSQL-13.10-blue.svg?style=for-the-badge&logo=postgresql&logoColor=66EEFF" />
     <img src="https://img.shields.io/badge/rest_api_version-1.0.0-blue?style=for-the-badge" />
     <img src="https://img.shields.io/badge/CI_CD-github_acions-blue.svg?style=for-the-badge" />
-    <img src="https://img.shields.io/github/actions/workflow/status/swapper1983/Foodgram/main_prod.yml?style=for-the-badge" />
 </p>
 
-[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/swapper1983/Foodgram/blob/master/README.md)
-[![ru](https://img.shields.io/badge/lang-ru-yellow.svg)](https://github.com/swapper1983/Foodgram/blob/master/README.RU.md)
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/swapper1983/foodgram-project-react/blob/master/README.md)
+[![ru](https://img.shields.io/badge/lang-ru-yellow.svg)](https://github.com/swapper1983/foodgram-project-react/blob/master/README.RU.md)
 
 Это онлайн-сервис и API для него. На этом сервисе пользователи могут публиковать рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список «Избранное», а перед походом в магазин скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
 

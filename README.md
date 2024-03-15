@@ -7,10 +7,9 @@
     <img src="https://img.shields.io/badge/nginx-1.19.3-blue.svg?style=for-the-badge&logo=nginx&logoColor=11FF44" />
     <img src="https://img.shields.io/badge/gunicorn-21.2.0-blue.svg?style=for-the-badge&logo=gunicorn&logoColor=11FF44" />
     <img src="https://img.shields.io/badge/docker-24.0.5-blue.svg?style=for-the-badge&logo=docker&logoColor=33AAFF" />
-    <img src="https://img.shields.io/badge/postgreSQL-13.0-blue.svg?style=for-the-badge&logo=postgresql&logoColor=66EEFF" />
+    <img src="https://img.shields.io/badge/postgreSQL-13.10-blue.svg?style=for-the-badge&logo=postgresql&logoColor=66EEFF" />
     <img src="https://img.shields.io/badge/rest_api_version-1.0.0-blue?style=for-the-badge" />
     <img src="https://img.shields.io/badge/CI_CD-github_acions-blue.svg?style=for-the-badge" />
-    <img src="https://img.shields.io/github/actions/workflow/status/swapper1983/foodgram-project-react/main.yml?style=for-the-badge" />
 </p>
 
 [![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/swapper1983/foodgram-project-react/blob/master/README.md)
@@ -78,7 +77,7 @@ This is an online service and an API for it. On this service, users can publish 
 1. Clone the repository:
 ```
 git clone git@github.com:swapper1983/foodgram-project-react.git
-cd foodgram
+cd foodgram-project-react
 ```
 
 2. In the root directory, create a .env file with environment variables.
@@ -130,8 +129,6 @@ python manage.py load
 10. In the folder with the manage.py file, run the command to run locally:
 ```
 python manage.py runserver
-```
-Locally, the documentation is available at:
 ```
 
 ### Running the project in containers:
