@@ -10,11 +10,11 @@
     <img src="https://img.shields.io/badge/postgreSQL-13.0-blue.svg?style=for-the-badge&logo=postgresql&logoColor=66EEFF" />
     <img src="https://img.shields.io/badge/rest_api_version-1.0.0-blue?style=for-the-badge" />
     <img src="https://img.shields.io/badge/CI_CD-github_acions-blue.svg?style=for-the-badge" />
-    <img src="https://img.shields.io/github/actions/workflow/status/octrow/Foodgram/main_prod.yml?style=for-the-badge" />
+    <img src="https://img.shields.io/github/actions/workflow/status/swapper1983/foodgram-project-react/main.yml?style=for-the-badge" />
 </p>
 
-[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/octrow/Foodgram/blob/master/README.md)
-[![ru](https://img.shields.io/badge/lang-ru-yellow.svg)](https://github.com/octrow/Foodgram/blob/master/README.RU.md)
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/swapper1983/foodgram-project-react/blob/master/README.md)
+[![ru](https://img.shields.io/badge/lang-ru-yellow.svg)](https://github.com/swapper1983/foodgram-project-react/blob/master/README.RU.md)
 
 This is an online service and an API for it. On this service, users can publish recipes, subscribe to the publications of other users, add liked recipes to the "Favorites" list, and before going to the store, download a summary list of products needed to prepare one or several selected dishes.
 
