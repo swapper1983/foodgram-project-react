@@ -38,7 +38,7 @@
 ### Сайт доступен по ссылке:
 
 ```
-- https:://mealgram.duckdns.org
+- https://mealgram.duckdns.org
 ```
 
 ### Foodgram - проект позволяет:

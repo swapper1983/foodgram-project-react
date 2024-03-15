@@ -38,7 +38,7 @@ This is an online service and an API for it. On this service, users can publish 
 ### Site is available at the link:
 
 ```
-- https:://mealgram.duckdns.org
+- https://mealgram.duckdns.org
 ```
 
 ### Foodgram - project allows:
