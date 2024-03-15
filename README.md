@@ -187,8 +187,7 @@ The project is available at:
 
 ```
 http://localhost/
-```
-The documentation is available at:
+
 ```
 8. Stop the project:
 ```
