@@ -1,4 +1,4 @@
-<h1 align="left"><a href="http://foodgramdjango.ddns.net/">Foodgram</a></h1>
+<h1 align="left"><a href="https://mealgram.duckdns.org/">Foodgram</a></h1>
 <br/>
 <p align="left">
     <img src="https://img.shields.io/badge/python-3.10.11-blue.svg?style=for-the-badge&logo=python&logoColor=ffdd54" />
@@ -7,7 +7,7 @@
     <img src="https://img.shields.io/badge/nginx-1.19.3-blue.svg?style=for-the-badge&logo=nginx&logoColor=11FF44" />
     <img src="https://img.shields.io/badge/gunicorn-21.2.0-blue.svg?style=for-the-badge&logo=gunicorn&logoColor=11FF44" />
     <img src="https://img.shields.io/badge/docker-24.0.5-blue.svg?style=for-the-badge&logo=docker&logoColor=33AAFF" />
-    <img src="https://img.shields.io/badge/postgreSQL-13.10-blue.svg?style=for-the-badge&logo=postgresql&logoColor=66EEFF" />
+    <img src="https://img.shields.io/badge/postgreSQL-15-blue.svg?style=for-the-badge&logo=postgresql&logoColor=66EEFF" />
     <img src="https://img.shields.io/badge/rest_api_version-1.0.0-blue?style=for-the-badge" />
     <img src="https://img.shields.io/badge/CI_CD-github_acions-blue.svg?style=for-the-badge" />
 </p>
@@ -19,7 +19,7 @@
 
 ### Стек
 
-- Python 3.10.11
+- Python 3.1x
 - Django 4.2.5
 - Django REST framework 3.14
 - Nginx
@@ -28,12 +28,11 @@
 
 #### Структура репозитория
  * /frontend - файлы, необходимые для сборки фронтенда приложения.
- * /gateway - конфигурационные файлы nginx и Docker.
- * /infra — заготовка инфраструктуры проекта.
+ * /infra - конфигурационные файлы nginx и Docker, а также данные для контейниризации (манифесты).
  * /backend - бэкенд foodgram на Django.
  * /data - список ингредиентов с единицами измерения (json, cvs).
  * /docs - файлы спецификации API.
- * /postman-collection - тесты API
+ * /postman-collection - тесты API.
 
 ### Сайт доступен по ссылке:
 
@@ -97,7 +96,7 @@ python -m venv venv
 ```
 pip install -r requirements.txt
 ```
-5. В foodgram/setting.py замените PostgreSQL на встроенную SQLite:
+5. В backend/foodgram/setting.py замените PostgreSQL на встроенную SQLite:
 ```
 DATABASES = {
     'default': {
@@ -112,10 +111,10 @@ DATABASES = {
 python manage.py makemigrations
 python manage.py migrate
 ```
-7. Соберите статику:
+7. Соберите статику и загрузите фикстуры:
 ```
 python manage.py collectstatic --no-input
-cp -r //app/collected_static/. //backend_static/static/
+python manage.py fill_db
 ```
 8. Создайте суперпользователя:
 ```
@@ -146,34 +145,34 @@ sudo apt-get install docker-compose-plugin
 
 2. Cоздайте и заполните .env файл в корневом каталоге 
 ```
-POSTGRES_DB=foodgram
-POSTGRES_USER=foodgram_user
-POSTGRES_PASSWORD=foodgram_password
-DB_NAME=postgram
-DB_HOST=db
-DB_PORT=5432
-DEBUG=True
-SECRET_KEY=django-insecure-**************************************
-DOCKER_NICKNAME=nick
-DOCKER_USERNAME=username
-DOCKER_PASSWORD=password
-ALLOWED_HOSTS=127.0.0.1,localhost,foodgram,backend,domainname
+POSTGRES_DB='foodgram'
+POSTGRES_USER='foodgram_user'
+POSTGRES_PASSWORD='foodgram_password'
+POSTGRES_NAME='postgram'
+POSTGRES_HOST='db'
+POSTGRES_PORT='5432'
+DEBUG='True'
+SECRET_KEY='django-insecure-**************************************'
+DOCKER_NICKNAME='nick'
+DOCKER_USERNAME='username'
+DOCKER_PASSWORD='password'
+ALLOWED_HOSTS='127.0.0.1,localhost,foodgram,backend,domainname'
 ```
 
 3. Из папки infra/ разверните контейнеры при помощи docker-compose:
 ```
 docker-compose up -d --build
 ```
-4. Выполните миграции:
+<!-- 4. Выполните миграции:
 ```
 docker-compose exec backend python manage.py makemigrations
 docker-compose exec backend python manage.py migrate
-```
-5. Создайте суперпользователя:
+``` -->
+4. Создайте суперпользователя:
 ```
 docker-compose exec backend python manage.py createsuperuser
 ```
-6. Соберите статику:
+<!-- 6. Соберите статику:
 ```
 docker compose -f docker-compose.yml exec backend python manage.py collectstatic --no-input
 docker compose -f docker-compose.yml exec backend cp -r //app/collected_static/. //backend_static/static/
@@ -181,13 +180,13 @@ docker compose -f docker-compose.yml exec backend cp -r //app/collected_static/.
 7. Наполните базу данных (ингредиентами). 
 ```
 docker-compose exec backend python manage.py load
-```
+``` -->
 Проект доступен по адресу:
 
 ```
 http://localhost/
 ```
-8. Остановка проекта:
+5. Остановка проекта:
 ```
 docker-compose down
 ```

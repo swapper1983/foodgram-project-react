@@ -14,29 +14,35 @@ services:
       - pg_data:/var/lib/postgresql/data
 
   backend:
-    build: ./backend/
+    build: ../backend/
     env_file: .env
+    ports:
+      - "8000:8000"
     volumes:
-      - static:/backend_static/
-      - media:/app/media/
+      - static:/static/
+      - media:/media/
     depends_on:
       - db
 
   frontend:
     env_file: .env
-    build: ./frontend/
-    command: cp -r /app/build/. /frontend_static/
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
     volumes:
-      - static:/frontend_static/
-      
-  gateway:
-    build: ./gateway/
-    env_file: .env
+      - ../frontend/:/app/result_build/
+
+  nginx:
+    image: nginx:1.19.3
+    env_file:
+      - .env
+    ports:
+      - "80:80"
     volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ../frontend/build:/usr/share/nginx/html/
       - static:/static/
       - media:/media/
-    ports:
-      - 80:80
     depends_on:
-      - backend
       - frontend
+      - backend

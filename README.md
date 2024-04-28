@@ -1,4 +1,4 @@
-<h1 align="left"><a href="http://foodgramdjango.ddns.net/">Foodgram</a></h1>
+<h1 align="left"><a href="https://mealgram.duckdns.org/">Foodgram</a></h1>
 <br/>
 <p align="left">
     <img src="https://img.shields.io/badge/python-3.10.11-blue.svg?style=for-the-badge&logo=python&logoColor=ffdd54" />
@@ -7,19 +7,19 @@
     <img src="https://img.shields.io/badge/nginx-1.19.3-blue.svg?style=for-the-badge&logo=nginx&logoColor=11FF44" />
     <img src="https://img.shields.io/badge/gunicorn-21.2.0-blue.svg?style=for-the-badge&logo=gunicorn&logoColor=11FF44" />
     <img src="https://img.shields.io/badge/docker-24.0.5-blue.svg?style=for-the-badge&logo=docker&logoColor=33AAFF" />
-    <img src="https://img.shields.io/badge/postgreSQL-13.10-blue.svg?style=for-the-badge&logo=postgresql&logoColor=66EEFF" />
+    <img src="https://img.shields.io/badge/postgreSQL-15-blue.svg?style=for-the-badge&logo=postgresql&logoColor=66EEFF" />
     <img src="https://img.shields.io/badge/rest_api_version-1.0.0-blue?style=for-the-badge" />
     <img src="https://img.shields.io/badge/CI_CD-github_acions-blue.svg?style=for-the-badge" />
 </p>
 
-[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/swapper1983/foodgram-project-react/blob/master/README.md)
-[![ru](https://img.shields.io/badge/lang-ru-yellow.svg)](https://github.com/swapper1983/foodgram-project-react/blob/master/README.RU.md)
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/swapper1983/foodgram-project/blob/master/README.md)
+[![ru](https://img.shields.io/badge/lang-ru-yellow.svg)](https://github.com/swapper1983/foodgram-project/blob/master/README.RU.md)
 
 This is an online service and an API for it. On this service, users can publish recipes, subscribe to the publications of other users, add liked recipes to the "Favorites" list, and before going to the store, download a summary list of products needed to prepare one or several selected dishes.
 
 ### Stack
 
-- Python 3.10.11
+- Python 3.1x
 - Django 4.2.5
 - Django REST framework 3.14
 - Nginx
@@ -28,12 +28,11 @@ This is an online service and an API for it. On this service, users can publish 
 
 #### Repository structure
  * /frontend - files needed to build the frontend of the application.
- * /gateway - nginx and Docker configuration files.
- * /infra - infrastructure template of the project.
+ * /infra - nginx and Docker configuration files, as well as containerisation data (manifests).
  * /backend - foodgram backend on Django.
  * /data - list of ingredients with units of measurement (json, cvs).
  * /docs - API specification files.
- * /postman-collection - API tests
+ * /postman-collection - API tests.
 
 ### Site is available at the link:
 
@@ -98,7 +97,7 @@ python -m venv venv
 ```
 pip install -r requirements.txt
 ```
-5. In foodgram/setting.py replace PostgreSQL with the built-in SQLite:
+5. In backend/foodgram/setting.py replace PostgreSQL with the built-in SQLite:
 ```
 DATABASES = {
     'default': {
@@ -113,10 +112,10 @@ DATABASES = {
 python manage.py makemigrations
 python manage.py migrate
 ```
-7. Collect static (at /backend):
+7. Collect static (at /backend) and load fixtures:
 ```
 python manage.py collectstatic --no-input
-cp -r //app/collected_static/. //backend_static/static/
+python manage.py fill_db
 ```
 8. Create a superuser:
 ```
@@ -147,34 +146,34 @@ sudo apt-get install docker-compose-plugin
 
 2. Create and fill in the .env file in the root directory
 ```
-POSTGRES_DB=foodgram
-POSTGRES_USER=foodgram_user
-POSTGRES_PASSWORD=foodgram_password
-DB_NAME=postgram
-DB_HOST=db
-DB_PORT=5432
-DEBUG=True
-SECRET_KEY=django-insecure-**************************************
-DOCKER_NICKNAME=nick
-DOCKER_USERNAME=username
-DOCKER_PASSWORD=password
-ALLOWED_HOSTS=127.0.0.1,localhost,foodgram,backend,domainname
+POSTGRES_DB='foodgram'
+POSTGRES_USER='foodgram_user'
+POSTGRES_PASSWORD='foodgram_password'
+POSTGRES_NAME='postgram'
+POSTGRES_HOST='db'
+POSTGRES_PORT='5432'
+DEBUG='True'
+SECRET_KEY='django-insecure-**************************************'
+DOCKER_NICKNAME='nick'
+DOCKER_USERNAME='username'
+DOCKER_PASSWORD='password'
+ALLOWED_HOSTS='127.0.0.1,localhost,foodgram,backend,domainname'
 ```
 
 3. From the infra/ folder, deploy the containers using docker-compose:
 ```
 docker-compose up -d --build
 ```
-4. Perform migrations:
+<!-- 4. Perform migrations:
 ```
 docker-compose exec backend python manage.py makemigrations
 docker-compose exec backend python manage.py migrate
-```
-5. Create a superuser:
+``` -->
+4. Create a superuser:
 ```
 docker-compose exec backend python manage.py createsuperuser
 ```
-6. Collect static:
+<!-- 6. Collect static:
 ```
 docker compose -f docker-compose.yml exec backend python manage.py collectstatic --no-input
 docker compose -f docker-compose.yml exec backend cp -r //app/collected_static/. //backend_static/static/
@@ -182,14 +181,14 @@ docker compose -f docker-compose.yml exec backend cp -r //app/collected_static/.
 7. Populate the database (with ingredients).
 ```
 docker-compose exec backend python manage.py load
-```
+``` -->
 The project is available at:
 
 ```
 http://localhost/
 
 ```
-8. Stop the project:
+5. Stop the project:
 ```
 docker-compose down
 ```
