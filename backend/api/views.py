@@ -12,8 +12,9 @@ from rest_framework.views import APIView
 
 from recipes.models import Subscriptions
 from .serializers import User, Tag, \
-    TagSerializer, Ingredient, IngredientSerializer, Recipe, ShoppingCart, ShoppingCartAndFavoritesSerializer, \
-    RecipeIngredient, Favorite, SubscriptionSerializer, RecipeSerializer, CreateRecipeSerializer
+    TagSerializer, Ingredient, IngredientSerializer, Recipe, ShoppingCart, \
+    ShoppingCartAndFavoritesSerializer, RecipeIngredient, Favorite, \
+    SubscriptionSerializer, RecipeSerializer, CreateRecipeSerializer
 
 
 class UsersAndRecipeListAPIPagination(PageNumberPagination):
@@ -311,7 +312,8 @@ class RecipeUpdateAndDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def check_object_permissions(self, request, obj):
         if obj.author != request.user:
-            raise PermissionDenied("Вы не можете редактировать или удалять этот рецепт.")
+            raise PermissionDenied(
+                "Вы не можете редактировать или удалять этот рецепт.")
 
     def delete(self, request, *args, **kwargs):
         recipe = self.get_object()

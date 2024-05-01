@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
-from djoser.serializers import UserCreateSerializer as BaseUserRegistrationSerializer
+from djoser.serializers import (UserCreateSerializer as
+                                BaseUserRegistrationSerializer)
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
@@ -30,8 +31,8 @@ class UserSerializer(serializers.ModelSerializer):
                 and request.user.is_authenticated):
             if obj == request.user:
                 return False
-            is_subscribed = Subscriptions.objects.is_subscribed(user=request.user,
-                                                                author=obj)
+            is_subscribed = Subscriptions.objects.is_subscribed(
+                user=request.user, author=obj)
             return is_subscribed
         return False
 
@@ -42,7 +43,8 @@ class RegistrationSerializer(BaseUserRegistrationSerializer):
     email = serializers.EmailField(required=True)
 
     class Meta(BaseUserRegistrationSerializer.Meta):
-        fields = ('id', 'email', 'username', 'password', 'first_name', 'last_name')
+        fields = ('id', 'email', 'username',
+                  'password', 'first_name', 'last_name')
 
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
@@ -92,8 +94,8 @@ class SubscriptionSerializer(UserSerializer):
     def get_recipes(self, obj):
         recipes_limit = self.context.get('request').query_params.get(
             'recipes_limit', None)
-        recipes = Recipe.objects.filter(author=obj)[:int(recipes_limit)
-        if recipes_limit else None]
+        recipes = Recipe.objects.filter(
+            author=obj)[:int(recipes_limit) if recipes_limit else None]
         return ShoppingCartAndFavoritesSerializer(recipes, many=True,
                                                   context=self.context).data
 
