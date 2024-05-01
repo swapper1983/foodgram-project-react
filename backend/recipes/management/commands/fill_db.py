@@ -1,8 +1,8 @@
 from django.core.management.base import BaseCommand
-from recipes.models import Ingredient, Tag
 from rest_framework.utils import json
 
 from foodgram.settings import BASE_DIR
+from recipes.models import Ingredient, Tag
 
 
 class Command(BaseCommand):
@@ -27,9 +27,7 @@ class Command(BaseCommand):
 
     def create_tags(self):
         if not Tag.objects.all().exists():
-            tag_breakfast = Tag(name='Завтрак',
-                                color='#FF6B00',
-                                slug='breakfast')
+            tag_breakfast = Tag(name='Завтрак', color='#FF6B00', slug='breakfast')
             tag_lunch = Tag(name='Обед', color='#FF9642', slug='lunch')
             tag_dinner = Tag(name='Ужин', color='#6D3353', slug='dinner')
             tag_list = [tag_breakfast, tag_lunch, tag_dinner]

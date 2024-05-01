@@ -1,7 +1,5 @@
 from django.contrib import admin
-
-from .models import (Favorites, Ingredient, Recipe, RecipeIngredient,
-                     ShoppingCart, Subscriptions, Tag)
+from .models import Tag, Ingredient, Recipe, Favorite, ShoppingCart, Subscriptions, RecipeIngredient
 
 
 class RecipeIngredientInline(admin.TabularInline):
@@ -21,9 +19,8 @@ class RecipeAdmin(admin.ModelAdmin):
     author_name.short_description = 'Имя и фамилия автора'
 
     def favorites_count(self, obj):
-        return Favorites.objects.filter(recipes=obj).count()
+        return Favorite.objects.filter(recipes=obj).count()
     favorites_count.short_description = 'Добавлений в избранное'
-
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
@@ -37,13 +34,14 @@ class TagAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 
-@admin.register(Favorites)
+@admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
     list_display = ('user', 'list_recipes')
     search_fields = ['user__username', 'recipe__name']
 
     def list_recipes(self, obj):
-        return ", ".join([recipe.name for recipe in obj.recipes.all()])
+        recipe_names = obj.recipes.values_list('name', flat=True)
+        return ", ".join(recipe_names)
 
     list_recipes.short_description = 'Recipes'
 
@@ -54,7 +52,8 @@ class ShoppingCartAdmin(admin.ModelAdmin):
     search_fields = ['user__username', 'recipe__name']
 
     def list_recipes(self, obj):
-        return ", ".join([recipe.name for recipe in obj.recipes.all()])
+        recipe_names = obj.recipes.values_list('name', flat=True)
+        return ", ".join(recipe_names)
 
     list_recipes.short_description = 'Recipes'
 
@@ -65,6 +64,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
     search_fields = ['user__username', 'subscription__username']
 
     def list_subscriptions(self, obj):
-        return ", ".join([user.username for user in obj.subscription.all()])
+        usernames = obj.subscription.values_list('username', flat=True)
+        return ", ".join(usernames)
 
     list_subscriptions.short_description = 'Subscriptions'
