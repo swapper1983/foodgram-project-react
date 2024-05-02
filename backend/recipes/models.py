@@ -31,10 +31,12 @@ class Ingredient(models.Model):
 
 
 class RecipeIngredient(models.Model):
-    recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE,
+    recipe = models.ForeignKey('Recipe',
+                               on_delete=models.CASCADE,
                                related_name='recipe_ingredients',
                                verbose_name='Рецепт')
-    ingredient = models.ForeignKey('Ingredient', on_delete=models.CASCADE,
+    ingredient = models.ForeignKey('Ingredient',
+                                   on_delete=models.CASCADE,
                                    related_name='ingredient_recipes',
                                    verbose_name='Ингредиент')
     amount = models.IntegerField(verbose_name='Количество',
@@ -53,8 +55,7 @@ class RecipeIngredient(models.Model):
 
 
 class Recipe(models.Model):
-    author = models.ForeignKey(User,
-                               on_delete=models.CASCADE,
+    author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name='user_recipes',
                                verbose_name='Автор')
     name = models.CharField(max_length=256, verbose_name='Название')
@@ -99,8 +100,7 @@ class Favorite(models.Model):
 
 
 class ShoppingCart(models.Model):
-    user = models.ForeignKey(User,
-                             on_delete=models.CASCADE,
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name='shopping_cart',
                              verbose_name='Пользователь')
     recipes = models.ManyToManyField(Recipe,
@@ -115,30 +115,13 @@ class ShoppingCart(models.Model):
         return self.user.username
 
 
-class SubscriptionManager(models.Manager):
-    def is_subscribed(self, user, author):
-        try:
-            subscriptions = Subscriptions.objects.get(user=user)
-            return subscriptions.subscription.filter(id=author.id).exists()
-        except Subscriptions.DoesNotExist:
-            return False
-
-    def get_subscriptions(self, user):
-        try:
-            return Subscriptions.objects.get(user=user).subscription.all()
-        except Subscriptions.DoesNotExist:
-            return []
-
-
-class Subscriptions(models.Model):
-    user = models.ForeignKey(User,
-                             on_delete=models.CASCADE,
+class Subscription(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name='subscriptions',
                              verbose_name='Пользователь')
     subscription = models.ManyToManyField(User,
                                           related_name='following',
                                           verbose_name='Подписка')
-    objects = SubscriptionManager()
 
     class Meta:
         verbose_name = 'Подписка'

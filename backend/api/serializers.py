@@ -4,15 +4,9 @@ from djoser.serializers import (UserCreateSerializer as
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
+from api.utils import RecipeManager
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
-                            ShoppingCart, Subscriptions, Tag)
-
-
-def validate_image(value):
-    if not value:
-        raise serializers.ValidationError(
-            "Поле image не может быть пустым.")
-    return value
+                            ShoppingCart, Subscription, Tag)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -31,9 +25,11 @@ class UserSerializer(serializers.ModelSerializer):
                 and request.user.is_authenticated):
             if obj == request.user:
                 return False
-            is_subscribed = Subscriptions.objects.is_subscribed(
-                user=request.user, author=obj)
-            return is_subscribed
+            try:
+                subscriptions = Subscription.objects.get(user=request.user)
+                return subscriptions.subscription.filter(id=obj.id).exists()
+            except Subscription.DoesNotExist:
+                return False
         return False
 
 
@@ -55,7 +51,7 @@ class RegistrationSerializer(BaseUserRegistrationSerializer):
         user = User.objects.create_user(**validated_data)
         ShoppingCart.objects.create(user=user)
         Favorite.objects.create(user=user)
-        Subscriptions.objects.create(user=user)
+        Subscription.objects.create(user=user)
         return user
 
 
@@ -75,7 +71,7 @@ class ShoppingCartAndFavoritesSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
 
     def validate_image(self, value):
-        return validate_image(value)
+        return RecipeManager.validate_image(value)
 
     class Meta:
         model = Recipe
@@ -94,8 +90,8 @@ class SubscriptionSerializer(UserSerializer):
     def get_recipes(self, obj):
         recipes_limit = self.context.get('request').query_params.get(
             'recipes_limit', None)
-        recipes = Recipe.objects.filter(
-            author=obj)[:int(recipes_limit) if recipes_limit else None]
+        recipes = (Recipe.objects.filter(author=obj)
+                   [:int(recipes_limit) if recipes_limit else None])
         return ShoppingCartAndFavoritesSerializer(recipes, many=True,
                                                   context=self.context).data
 
@@ -196,7 +192,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         return data
 
     def validate_image(self, value):
-        return validate_image(value)
+        return RecipeManager.validate_image(value)
 
     def update_ingredients(self, recipe, ingredients_data):
         new_ingredients = [
@@ -230,11 +226,8 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
 
         instance = super().update(instance, validated_data)
         RecipeIngredient.objects.filter(recipe=instance).delete()
-        if tags_data is not None:
-            instance.tags.set(tags_data)
-
-        if ingredients_data is not None:
-            self.update_ingredients(instance, ingredients_data)
+        instance.tags.set(tags_data)
+        self.update_ingredients(instance, ingredients_data)
 
         return instance
 
