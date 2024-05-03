@@ -5,15 +5,16 @@ from django.http import HttpResponse
 from djoser.views import UserViewSet
 from rest_framework import generics, viewsets
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from recipes.models import Subscription
 from .paginators import UsersAndRecipeListAPIPagination
-from .serializers import (User, Tag, TagSerializer, Ingredient,
-                          IngredientSerializer, Recipe, ShoppingCart,
+from .permissions import IsAuthorOrReadOnly
+from .serializers import (User, Tag,
+                          TagSerializer, Ingredient, IngredientSerializer,
+                          Recipe, ShoppingCart,
                           ShoppingCartAndFavoritesSerializer,
                           RecipeIngredient, Favorite, SubscriptionSerializer,
                           RecipeSerializer, CreateRecipeSerializer)
@@ -23,22 +24,15 @@ from .utils import RecipeManager
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all().order_by('-id')
     pagination_class = UsersAndRecipeListAPIPagination
-    permission_classes_by_action = {
-        'create': [IsAuthenticated],
-        'update': [IsAuthenticated],
-        'partial_update': [IsAuthenticated],
-        'destroy': [IsAuthenticated],
-        'list': [AllowAny],
-        'retrieve': [AllowAny],
-        'download_shopping_cart': [IsAuthenticated],
-    }
 
     def get_permissions(self):
-        try:
-            return ([permission() for permission
-                     in self.permission_classes_by_action[self.action]])
-        except KeyError:
-            return [permission() for permission in self.permission_classes]
+        if self.action in ['update', 'partial_update', 'destroy']:
+            permission_classes = [IsAuthorOrReadOnly]
+        elif self.action in ['create', 'download_shopping_cart']:
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
@@ -49,41 +43,32 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if self.action == 'list':
-            is_favorited = self.request.query_params.get('is_favorited')
-            is_in_shopping_cart = self.request.query_params.get(
-                'is_in_shopping_cart')
-            author_id = self.request.query_params.get('author')
-            tags = self.request.query_params.getlist('tags')
+        if self.action != 'list':
+            return queryset
 
-            if self.request.user.is_authenticated:
-                if is_favorited:
-                    queryset = queryset.filter(
-                        favorite_by__user=self.request.user)
-                if is_in_shopping_cart:
-                    queryset = queryset.filter(
-                        in_shopping_carts__user=self.request.user)
+        is_favorited = self.request.query_params.get('is_favorited')
+        is_in_shopping_cart = self.request.query_params.get(
+            'is_in_shopping_cart')
+        author_id = self.request.query_params.get('author')
+        tags = self.request.query_params.getlist('tags')
 
-            if author_id:
-                if author_id == 'me':
-                    queryset = queryset.filter(author=self.request.user)
-                else:
-                    queryset = queryset.filter(author_id=author_id)
+        if self.request.user.is_authenticated:
+            if is_favorited:
+                queryset = queryset.filter(favorite_by__user=self.request.user)
+            if is_in_shopping_cart:
+                queryset = queryset.filter(
+                    in_shopping_carts__user=self.request.user)
 
-            if tags:
-                queryset = queryset.filter(tags__slug__in=tags).distinct()
+        if author_id:
+            if author_id == 'me':
+                queryset = queryset.filter(author=self.request.user)
+            else:
+                queryset = queryset.filter(author_id=author_id)
+
+        if tags:
+            queryset = queryset.filter(tags__slug__in=tags).distinct()
 
         return queryset
-
-    def perform_update(self, serializer):
-        if serializer.instance.author != self.request.user:
-            raise PermissionDenied("Вы не являетесь автором этого рецепта.")
-        serializer.save()
-
-    def perform_destroy(self, instance):
-        if instance.author != self.request.user:
-            raise PermissionDenied("Вы не являетесь автором этого рецепта.")
-        instance.delete()
 
     @action(methods=['get'], detail=False)
     def download_shopping_cart(self, request, pk=None, *args, **kwargs):
@@ -190,42 +175,6 @@ class FavoriteAPIView(APIView):
             recipe_id=recipe_id,
             collection_model=Favorite
         )
-
-
-class DownloadShoppingCartAPIView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        user = request.user
-        try:
-            shopping_cart = ShoppingCart.objects.get(user=user)
-        except ShoppingCart.DoesNotExist:
-            return Response({'error': 'Корзина покупок не найдена.'},
-                            status=http.HTTPStatus.NOT_FOUND)
-
-        recipes = shopping_cart.recipes.all()
-
-        if not recipes.exists():
-            return Response({'error': 'Ваша корзина пуста.'},
-                            status=http.HTTPStatus.OK)
-
-        ingredients = RecipeIngredient.objects.filter(
-            recipe__in=recipes).values(
-            'ingredient__name', 'ingredient__measurement_unit').annotate(
-            total_amount=Sum('amount')).order_by('ingredient__name')
-
-        shopping_list = "\r\n".join([
-            (f"{item['ingredient__name']} "
-             f"({item['ingredient__measurement_unit']}) — "
-             f"{item['total_amount']}")
-            for item in ingredients
-        ])
-
-        response = HttpResponse(shopping_list,
-                                content_type='text/plain; charset=utf-8')
-        response['Content-Disposition'] = (
-            'attachment; filename="shopping_list.txt"')
-        return response
 
 
 class SubscriptionsListAPIView(generics.ListAPIView):
